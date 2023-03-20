@@ -19,7 +19,6 @@ package config_client
 import (
 	"context"
 	"fmt"
-	"math"
 	"os"
 	"strings"
 	"sync"
@@ -30,6 +29,7 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/v2/common/monitor"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/kms"
+
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/cache"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/nacos_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
@@ -139,7 +139,7 @@ func NewConfigClient(nc nacos_client.INacosClient) (*ConfigClient, error) {
 	config.cacheMap = cache.NewConcurrentMap()
 	// maximum buffered queue to prevent chan deadlocks during frequent configuration file updates
 	// use Math.MaxInt32 to avoid overflows on ARM 32-bits
-	config.listenExecute = make(chan struct{}, math.MaxInt32)
+	config.listenExecute = make(chan struct{}, 255)
 
 	config.startInternal()
 

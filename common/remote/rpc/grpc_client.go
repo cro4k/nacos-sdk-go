@@ -20,7 +20,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"math"
 	"os"
 	"strconv"
 	"sync"
@@ -32,12 +31,13 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/v2/common/remote/rpc/rpc_request"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/remote/rpc/rpc_response"
 
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
+
 	nacos_grpc_service "github.com/nacos-group/nacos-sdk-go/v2/api/grpc"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/logger"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/nacos_server"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/keepalive"
 )
 
 type GrpcClient struct {
@@ -51,7 +51,7 @@ func NewGrpcClient(ctx context.Context, clientName string, nacosServer *nacos_se
 			name:                        clientName,
 			labels:                      make(map[string]string, 8),
 			rpcClientStatus:             INITIALIZED,
-			eventChan:                   make(chan ConnectionEvent, math.MaxInt32),
+			eventChan:                   make(chan ConnectionEvent, 255),
 			reconnectionChan:            make(chan ReconnectContext),
 			nacosServer:                 nacosServer,
 			serverRequestHandlerMapping: make(map[string]ServerRequestHandlerMapping, 8),
